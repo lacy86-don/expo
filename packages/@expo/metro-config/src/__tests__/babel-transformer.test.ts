@@ -60,6 +60,7 @@ it(`passes the environment as isServer to the babel preset`, () => {
   expect(babel.transformSync).toHaveBeenCalledWith(fixture, {
     ast: true,
     babelrc: true,
+    babelrcRoots: '/',
     caller: {
       // HERE IS THE MAGIC
       isReactServer: false,
@@ -74,15 +75,19 @@ it(`passes the environment as isServer to the babel preset`, () => {
       isNodeModule: false,
       isHMREnabled: true,
       preserveEnvVars: undefined,
-      projectRoot: expect.any(String),
+      projectRoot: '/',
       routerRoot: 'app',
+      supportsReactCompiler: undefined,
+      supportsStaticESM: undefined,
     },
     cloneInputAst: false,
     code: false,
+    configFile: true,
     cwd: '/',
     extends: undefined,
     filename: 'foo.js',
     highlightCode: true,
+    root: '/',
     presets: [expect.anything()],
     plugins: [],
     sourceType: 'unambiguous',
@@ -125,6 +130,7 @@ it(`passes the environment as isReactServer to the babel preset`, () => {
   expect(babel.transformSync).toHaveBeenCalledWith(fixture, {
     ast: true,
     babelrc: true,
+    babelrcRoots: '/',
     caller: expect.objectContaining({
       // HERE IS THE MAGIC
       isReactServer: true,
@@ -138,15 +144,17 @@ it(`passes the environment as isReactServer to the babel preset`, () => {
       isNodeModule: false,
       isHMREnabled: true,
       preserveEnvVars: undefined,
-      projectRoot: expect.any(String),
+      projectRoot: '/',
       routerRoot: 'app',
     }),
     cloneInputAst: false,
     code: false,
+    configFile: true,
     cwd: '/',
     extends: undefined,
     filename: 'foo.js',
     highlightCode: true,
+    root: '/',
     presets: [expect.anything()],
     plugins: [],
     sourceType: 'unambiguous',
@@ -257,5 +265,166 @@ describe('isHermesV1 detection', () => {
         caller: expect.objectContaining({ isHermesV1: true }),
       })
     );
+  });
+});
+
+describe('enableBabelRCLookup', () => {
+  const fixture = `export default function App() { return <div>Hello</div> }`;
+
+  function makeOptions(overrides: { enableBabelRCLookup?: boolean; filename?: string }) {
+    return {
+      globalPrefix: '',
+      enableBabelRuntime: true,
+      enableBabelRCLookup: overrides.enableBabelRCLookup,
+      dev: true,
+      projectRoot: '/',
+      inlineRequires: false as any,
+      minify: false,
+      platform: 'ios' as const,
+      publicPath: '/',
+      customTransformOptions: Object.create({}),
+    };
+  }
+
+  beforeEach(() => {
+    console.warn = jest.fn();
+  });
+
+  describe('when true', () => {
+    it('enables babelrc for user source files', () => {
+      vol.fromJSON({}, '/');
+      transformer.transform({
+        filename: '/src/App.js',
+        options: makeOptions({ enableBabelRCLookup: true }),
+        src: fixture,
+        plugins: [],
+      });
+
+      expect(babel.transformSync).toHaveBeenCalledWith(
+        fixture,
+        expect.objectContaining({
+          babelrc: true,
+          babelrcRoots: '/',
+          configFile: true,
+        })
+      );
+    });
+
+    it('disables babelrc for node_modules files', () => {
+      vol.fromJSON({}, '/');
+      transformer.transform({
+        filename: '/node_modules/some-pkg/index.js',
+        options: makeOptions({ enableBabelRCLookup: true }),
+        src: fixture,
+        plugins: [],
+      });
+
+      expect(babel.transformSync).toHaveBeenCalledWith(
+        fixture,
+        expect.objectContaining({
+          babelrc: false,
+          babelrcRoots: '/',
+          configFile: true,
+        })
+      );
+    });
+  });
+
+  describe('when undefined (default)', () => {
+    it('disables babelrc and configFile for user source files', () => {
+      vol.fromJSON({}, '/');
+      transformer.transform({
+        filename: '/src/App.js',
+        options: makeOptions({ enableBabelRCLookup: undefined }),
+        src: fixture,
+        plugins: [],
+      });
+
+      expect(babel.transformSync).toHaveBeenCalledWith(
+        fixture,
+        expect.objectContaining({
+          babelrc: false,
+          babelrcRoots: false,
+          configFile: false,
+        })
+      );
+    });
+
+    it('disables babelrc and configFile for node_modules files', () => {
+      vol.fromJSON({}, '/');
+      transformer.transform({
+        filename: '/node_modules/some-pkg/index.js',
+        options: makeOptions({ enableBabelRCLookup: undefined }),
+        src: fixture,
+        plugins: [],
+      });
+
+      expect(babel.transformSync).toHaveBeenCalledWith(
+        fixture,
+        expect.objectContaining({
+          babelrc: false,
+          babelrcRoots: false,
+          configFile: false,
+        })
+      );
+    });
+
+    it('still loads the user config via extends', () => {
+      jest.resetModules();
+      const mockTransformSync = jest.fn(() => ({
+        ast: {
+          type: 'File',
+          program: { type: 'Program', body: [], directives: [], sourceType: 'module' },
+        },
+        metadata: {},
+      }));
+      jest.doMock('../babel-core', () => {
+        const actual = jest.requireActual('../babel-core');
+        return { ...actual, transformSync: mockTransformSync };
+      });
+      jest.doMock('../loadBabelConfig', () => ({
+        loadBabelConfig: () => ({ exts: '/babel.config.js' }),
+      }));
+      const localTransformer = require('../babel-transformer') as BabelTransformer;
+
+      vol.fromJSON({}, '/');
+      localTransformer.transform({
+        filename: '/src/App.js',
+        options: makeOptions({ enableBabelRCLookup: undefined }),
+        src: fixture,
+        plugins: [],
+      });
+
+      expect(mockTransformSync).toHaveBeenCalledWith(
+        fixture,
+        expect.objectContaining({
+          extends: '/babel.config.js',
+          configFile: false,
+        })
+      );
+    });
+  });
+
+  describe('when false', () => {
+    it('disables all Babel discovery and does not load user config', () => {
+      vol.fromJSON({}, '/');
+      transformer.transform({
+        filename: '/src/App.js',
+        options: makeOptions({ enableBabelRCLookup: false }),
+        src: fixture,
+        plugins: [],
+      });
+
+      expect(babel.transformSync).toHaveBeenCalledWith(
+        fixture,
+        expect.objectContaining({
+          babelrc: false,
+          babelrcRoots: false,
+          configFile: false,
+          extends: undefined,
+          presets: [expect.anything()],
+        })
+      );
+    });
   });
 });
