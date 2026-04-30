@@ -10,6 +10,14 @@ import path from 'node:path';
 
 import type { TransformOptions } from './babel-core';
 
+export function resolveBabelrcName(projectRoot: string) {
+  // Check for various babel config files in the project root
+  const possibleBabelRCPaths = ['.babelrc', '.babelrc.js', 'babel.config.js'];
+  return possibleBabelRCPaths.find((configFileName) => {
+    return fs.existsSync(path.resolve(projectRoot, configFileName));
+  });
+}
+
 /**
  * Returns a memoized function that checks for the existence of a
  * project-level .babelrc file. If it doesn't exist, it reads the
@@ -33,15 +41,10 @@ export const loadBabelConfig = (function () {
 
     if (projectRoot && enableBabelRCLookup) {
       // Check for various babel config files in the project root
-      const possibleBabelRCPaths = ['.babelrc', '.babelrc.js', 'babel.config.js'];
-
-      const foundBabelRCPath = possibleBabelRCPaths.find((configFileName) =>
-        fs.existsSync(path.resolve(projectRoot, configFileName))
-      );
-
+      const foundBabelRCName = resolveBabelrcName(projectRoot);
       // Extend the config if a babel config file is found
-      if (foundBabelRCPath) {
-        babelRC.extends = path.resolve(projectRoot, foundBabelRCPath);
+      if (foundBabelRCName) {
+        babelRC.extends = path.resolve(projectRoot, foundBabelRCName);
       }
     }
 
