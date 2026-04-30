@@ -18,6 +18,7 @@
 
 - Updated the `isHermesV1` detection logic and fixed unit tests. ([#43841](https://github.com/expo/expo/pull/43841) by [@kudo](https://github.com/kudo))
 - Remove outdated `watcher.unstable_workerThreads` option ([#44591](https://github.com/expo/expo/pull/44591) by [@kitten](https://github.com/kitten))
+- Use Babel config path hint to Expo Metro transformer and add `loadPartialConfigSync` cache key to invalidate Babel transform cache more granularly ([#45260](https://github.com/expo/expo/pull/45260) by [@kitten](https://github.com/kitten))
 
 ## 55.0.9 — 2026-02-25
 
