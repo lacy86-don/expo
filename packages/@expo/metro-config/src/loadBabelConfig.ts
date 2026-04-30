@@ -29,9 +29,11 @@ export const loadBabelConfig = (function () {
   return function _getBabelRC({
     projectRoot,
     enableBabelRCLookup = true,
+    extendsBabelConfigPath,
   }: {
     projectRoot: string;
     enableBabelRCLookup?: boolean;
+    extendsBabelConfigPath?: string | undefined;
   }) {
     if (babelRC !== null) {
       return babelRC;
@@ -39,10 +41,12 @@ export const loadBabelConfig = (function () {
 
     babelRC = {};
 
-    if (projectRoot && enableBabelRCLookup) {
-      // Check for various babel config files in the project root
+    if (enableBabelRCLookup && extendsBabelConfigPath) {
+      babelRC.extends = path.resolve(projectRoot, extendsBabelConfigPath);
+    } else if (projectRoot && enableBabelRCLookup) {
+      // NOTE(@kitten): We forcefully set `extendsBabelConfigPath`, but if it's missing,
+      // we fall back to resolving the Babel config ourselves
       const foundBabelRCName = resolveBabelrcName(projectRoot);
-      // Extend the config if a babel config file is found
       if (foundBabelRCName) {
         babelRC.extends = path.resolve(projectRoot, foundBabelRCName);
       }
