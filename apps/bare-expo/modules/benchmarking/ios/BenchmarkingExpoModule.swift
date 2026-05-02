@@ -9,30 +9,39 @@ struct Point: Record {
 }
 
 public final class BenchmarkingExpoModule: Module {
-//  @OptimizedFunction
-  private func addNumbersOptimized(a: Double, b: Double) throws -> Double {
-    return a + b
-  }
-
-//  @OptimizedFunction
-  private func addNumbersAsyncOptimized(a: Double, b: Double) throws -> Double {
-    return a + b
-  }
-
   public func definition() -> ModuleDefinition {
     Name("BenchmarkingExpoModule")
 
+    // no-op
+
     Function("nothing") {}
+    Function("nothingOptimized", nothingOptimized())
+
+    // Adding numbers (sync)
 
     Function("addNumbers") { (a: Double, b: Double) in
       return a + b
     }
 
-    Function("addNumbersOptimized", addNumbersOptimized)
+    Function("addNumbersOptimized", addNumbersOptimized())
+
+    // Adding numbers (async)
+
+    AsyncFunction("addNumbersAsync") { (a: Double, b: Double) in
+      return a + b
+    }
+
+    AsyncFunction("addNumbersAsyncOptimized", addNumbersAsyncOptimized())
+
+    // Adding strings
 
     Function("addStrings") { (a: String, b: String) in
       return a + b
     }
+
+    Function("addStringsOptimized", addStringsOptimized())
+
+    // Other
 
     Function("foldArray") { (array: [Double]) in
       return array.reduce(0.0, +)
@@ -41,11 +50,23 @@ public final class BenchmarkingExpoModule: Module {
     Function("echoObject") { (point: Point) in
       return point
     }
+  }
 
-    AsyncFunction("addNumbersAsync") { (a: Double, b: Double) in
-      return a + b
-    }
+  @OptimizedFunction
+  private func nothingOptimized() -> Void {}
 
-    AsyncFunction("addNumbersAsyncOptimized", addNumbersAsyncOptimized)
+  @OptimizedFunction
+  private func addNumbersOptimized(a: Double, b: Double) throws -> Double {
+    return a + b
+  }
+
+  @OptimizedFunction
+  private func addNumbersAsyncOptimized(a: Double, b: Double) throws -> Double {
+    return a + b
+  }
+
+  @OptimizedFunction
+  private func addStringsOptimized(a: String, b: String) throws -> String {
+    return a + b
   }
 }

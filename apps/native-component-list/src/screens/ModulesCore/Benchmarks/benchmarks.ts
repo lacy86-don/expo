@@ -77,6 +77,17 @@ export const GROUPS: Group[] = [
         },
       },
       {
+        id: 'expo-optimized',
+        label: 'ExpoModule (optimized)',
+        available: ExpoModule?.nothingOptimized != null,
+        async run(iterations) {
+          ExpoModule.nothingOptimized();
+          return timeSync(iterations, () => {
+            ExpoModule.nothingOptimized();
+          });
+        },
+      },
+      {
         id: 'turbo',
         label: 'TurboModule',
         available: TurboModule?.nothing != null,
@@ -190,6 +201,17 @@ export const GROUPS: Group[] = [
           ExpoModule.addStrings('hello ', 'world');
           return timeSync(iterations, () => {
             ExpoModule.addStrings('hello ', 'world');
+          });
+        },
+      },
+      {
+        id: 'expo-optimized',
+        label: 'ExpoModule (optimized)',
+        available: ExpoModule?.addStringsOptimized != null,
+        async run(iterations) {
+          ExpoModule.addStringsOptimized('hello ', 'world');
+          return timeSync(iterations, () => {
+            ExpoModule.addStringsOptimized('hello ', 'world');
           });
         },
       },
