@@ -18,6 +18,7 @@
 
 - Remove outdated `watcher.unstable_workerThreads` option ([#44591](https://github.com/expo/expo/pull/44591) by [@kitten](https://github.com/kitten))
 - Delete Hermes v1 detection as it's the default ([#45263](https://github.com/expo/expo/pull/45263) by [@kitten](https://github.com/kitten))
+- Skip `generateImportNames` traversal/phase when live bindings import/export support is enabled ([#45349](https://github.com/expo/expo/pull/45349) by [@kitten](https://github.com/kitten))
 
 ## 55.0.9 — 2026-02-25
 
