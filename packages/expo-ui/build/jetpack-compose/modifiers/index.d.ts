@@ -88,11 +88,18 @@ export type GradientPoint = {
     y: number;
 };
 /**
- * A brush describes how a region is painted. Mirrors Compose's `Brush` shapes
- * (currently supports `Brush.linearGradient`).
+ * Describes how a region is painted. Mirrors Compose's
+ * [`Brush`](https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Brush).
+ * Construct via the brush factories (e.g., `linearGradient`) and pass to
+ * modifiers like `background`.
  */
 export type Brush = {
     type: 'linearGradient';
+} & LinearGradientConfig;
+/**
+ * Configuration for a linear gradient brush.
+ */
+export type LinearGradientConfig = {
     /** Array of color strings (hex, e.g., '#FF0000'). At least 2 entries. */
     colors: ColorValue[];
     /** Start point in normalized [0, 1] coordinates. @default { x: 0, y: 0 } */
@@ -101,8 +108,18 @@ export type Brush = {
     endPoint?: GradientPoint;
 };
 /**
+ * Creates a linear gradient brush — mirrors Compose's
+ * [`Brush.linearGradient`](https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Brush#linearGradient(kotlin.collections.List,androidx.compose.ui.geometry.Offset,androidx.compose.ui.geometry.Offset,androidx.compose.ui.graphics.TileMode)).
+ *
+ * @example
+ * ```ts
+ * background(linearGradient({ colors: ['#FF3B30', '#007AFF'] }))
+ * ```
+ */
+export declare function linearGradient(config: LinearGradientConfig): Brush;
+/**
  * Sets the background color or brush.
- * @param value - A color string (hex, e.g., '#FF0000') or a `Brush` (e.g., `{ type: 'linearGradient', ... }`).
+ * @param value - A color string (hex, e.g., `'#FF0000'`) or a `Brush` (e.g., `linearGradient({ colors: [...] })`).
  */
 export declare function background(value: ColorValue | Brush): import("./createModifier").ModifierConfig;
 /**

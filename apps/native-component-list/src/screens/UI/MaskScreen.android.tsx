@@ -1,5 +1,12 @@
 import { Box, Column, Host, Mask, Row, Text as ComposeText } from '@expo/ui/jetpack-compose';
-import { background, clip, fillMaxHeight, Shapes, size } from '@expo/ui/jetpack-compose/modifiers';
+import {
+  background,
+  clip,
+  fillMaxHeight,
+  linearGradient,
+  Shapes,
+  size,
+} from '@expo/ui/jetpack-compose/modifiers';
 import React from 'react';
 import { ScrollView, StyleSheet, Text as RNText, View } from 'react-native';
 
@@ -28,12 +35,13 @@ export default function MaskScreen() {
             <Box
               modifiers={[
                 size(300, 80),
-                background({
-                  type: 'linearGradient',
-                  colors: ['#FF3B30', '#FF9500', '#FFCC00', '#34C759', '#007AFF', '#AF52DE'],
-                  startPoint: { x: 0, y: 0 },
-                  endPoint: { x: 1, y: 1 },
-                }),
+                background(
+                  linearGradient({
+                    colors: ['#FF3B30', '#FF9500', '#FFCC00', '#34C759', '#007AFF', '#AF52DE'],
+                    startPoint: { x: 0, y: 0 },
+                    endPoint: { x: 1, y: 1 },
+                  })
+                ),
               ]}
             />
             <Mask.Content>
@@ -63,12 +71,13 @@ export default function MaskScreen() {
             <Box
               modifiers={[
                 size(260, 120),
-                background({
-                  type: 'linearGradient',
-                  colors: ['#FF2D55', '#AF52DE'],
-                  startPoint: { x: 0, y: 0 },
-                  endPoint: { x: 1, y: 1 },
-                }),
+                background(
+                  linearGradient({
+                    colors: ['#FF2D55', '#AF52DE'],
+                    startPoint: { x: 0, y: 0 },
+                    endPoint: { x: 1, y: 1 },
+                  })
+                ),
               ]}
             />
             <Mask.Content>
@@ -86,12 +95,13 @@ export default function MaskScreen() {
             <Box
               modifiers={[
                 size(260, 120),
-                background({
-                  type: 'linearGradient',
-                  colors: ['#34C759', '#007AFF'],
-                  startPoint: { x: 0, y: 0 },
-                  endPoint: { x: 1, y: 1 },
-                }),
+                background(
+                  linearGradient({
+                    colors: ['#34C759', '#007AFF'],
+                    startPoint: { x: 0, y: 0 },
+                    endPoint: { x: 1, y: 1 },
+                  })
+                ),
               ]}
             />
             <Mask.Content>
@@ -107,12 +117,13 @@ export default function MaskScreen() {
             <Box
               modifiers={[
                 size(280, 140),
-                background({
-                  type: 'linearGradient',
-                  colors: ['#FF9500', '#FF3B30'],
-                  startPoint: { x: 0, y: 0 },
-                  endPoint: { x: 1, y: 1 },
-                }),
+                background(
+                  linearGradient({
+                    colors: ['#FF9500', '#FF3B30'],
+                    startPoint: { x: 0, y: 0 },
+                    endPoint: { x: 1, y: 1 },
+                  })
+                ),
               ]}
             />
             <Mask.Content>
@@ -150,12 +161,13 @@ export default function MaskScreen() {
               <Box
                 modifiers={[
                   size(300, 80),
-                  background({
-                    type: 'linearGradient',
-                    colors: ['#000000', '#00000000'],
-                    startPoint: { x: 0, y: 0 },
-                    endPoint: { x: 1, y: 0 },
-                  }),
+                  background(
+                    linearGradient({
+                      colors: ['#000000', '#00000000'],
+                      startPoint: { x: 0, y: 0 },
+                      endPoint: { x: 1, y: 0 },
+                    })
+                  ),
                 ]}
               />
             </Mask.Content>
@@ -169,24 +181,26 @@ export default function MaskScreen() {
             <Box
               modifiers={[
                 size(200, 200),
-                background({
-                  type: 'linearGradient',
-                  colors: ['#FF3B30', '#FF9500', '#FFCC00', '#34C759', '#007AFF', '#AF52DE'],
-                  startPoint: { x: 0, y: 0 },
-                  endPoint: { x: 1, y: 1 },
-                }),
+                background(
+                  linearGradient({
+                    colors: ['#FF3B30', '#FF9500', '#FFCC00', '#34C759', '#007AFF', '#AF52DE'],
+                    startPoint: { x: 0, y: 0 },
+                    endPoint: { x: 1, y: 1 },
+                  })
+                ),
               ]}
             />
             <Mask.Content>
               <Box
                 modifiers={[
                   size(200, 200),
-                  background({
-                    type: 'linearGradient',
-                    colors: ['#000000', '#000000', '#00000000'],
-                    startPoint: { x: 0, y: 0 },
-                    endPoint: { x: 0, y: 1 },
-                  }),
+                  background(
+                    linearGradient({
+                      colors: ['#000000', '#000000', '#00000000'],
+                      startPoint: { x: 0, y: 0 },
+                      endPoint: { x: 0, y: 1 },
+                    })
+                  ),
                 ]}
               />
             </Mask.Content>

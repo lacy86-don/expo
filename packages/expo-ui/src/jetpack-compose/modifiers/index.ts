@@ -146,11 +146,17 @@ export const offset = (x: number, y: number) => createModifier('offset', { x, y 
 export type GradientPoint = { x: number; y: number };
 
 /**
- * A brush describes how a region is painted. Mirrors Compose's `Brush` shapes
- * (currently supports `Brush.linearGradient`).
+ * Describes how a region is painted. Mirrors Compose's
+ * [`Brush`](https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Brush).
+ * Construct via the brush factories (e.g., `linearGradient`) and pass to
+ * modifiers like `background`.
  */
-export type Brush = {
-  type: 'linearGradient';
+export type Brush = { type: 'linearGradient' } & LinearGradientConfig;
+
+/**
+ * Configuration for a linear gradient brush.
+ */
+export type LinearGradientConfig = {
   /** Array of color strings (hex, e.g., '#FF0000'). At least 2 entries. */
   colors: ColorValue[];
   /** Start point in normalized [0, 1] coordinates. @default { x: 0, y: 0 } */
@@ -160,24 +166,35 @@ export type Brush = {
 };
 
 /**
+ * Creates a linear gradient brush — mirrors Compose's
+ * [`Brush.linearGradient`](https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Brush#linearGradient(kotlin.collections.List,androidx.compose.ui.geometry.Offset,androidx.compose.ui.geometry.Offset,androidx.compose.ui.graphics.TileMode)).
+ *
+ * @example
+ * ```ts
+ * background(linearGradient({ colors: ['#FF3B30', '#007AFF'] }))
+ * ```
+ */
+export function linearGradient(config: LinearGradientConfig): Brush {
+  if (config.colors.length < 2) {
+    throw new Error(
+      `linearGradient requires at least 2 colors, got ${config.colors.length}. Pass two or more entries in 'colors'.`
+    );
+  }
+  return {
+    type: 'linearGradient',
+    colors: config.colors,
+    startPoint: config.startPoint ?? { x: 0, y: 0 },
+    endPoint: config.endPoint ?? { x: 1, y: 1 },
+  };
+}
+
+/**
  * Sets the background color or brush.
- * @param value - A color string (hex, e.g., '#FF0000') or a `Brush` (e.g., `{ type: 'linearGradient', ... }`).
+ * @param value - A color string (hex, e.g., `'#FF0000'`) or a `Brush` (e.g., `linearGradient({ colors: [...] })`).
  */
 export function background(value: ColorValue | Brush) {
   if (typeof value === 'object' && 'type' in value) {
-    if (value.colors.length < 2) {
-      throw new Error(
-        `background() ${value.type} requires at least 2 colors, got ${value.colors.length}. Pass two or more entries in 'colors', or pass a single color string for a solid background.`
-      );
-    }
-    return createModifier('background', {
-      brush: {
-        type: value.type,
-        colors: value.colors,
-        startPoint: value.startPoint ?? { x: 0, y: 0 },
-        endPoint: value.endPoint ?? { x: 1, y: 1 },
-      },
-    });
+    return createModifier('background', { brush: value });
   }
   return createModifier('background', { color: value });
 }
