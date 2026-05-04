@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { Tabs } from 'react-native-screens';
 
 import { renderRouter } from '../../testing-library';
-import { appendIconOptions } from '../NativeTabTrigger';
+import { appendIconOptions } from '../iconOptions';
 import { NativeTabs } from '../NativeTabs';
 import type { NativeTabsTriggerIconProps } from '../common/elements';
 import type { NativeTabOptions } from '../types';

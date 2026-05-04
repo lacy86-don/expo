@@ -5,7 +5,7 @@ import { Tabs, type TabsScreenProps } from 'react-native-screens';
 
 import { HrefPreview } from '../../link/preview/HrefPreview';
 import { renderRouter, within } from '../../testing-library';
-import { appendIconOptions } from '../NativeTabTrigger';
+import { appendIconOptions } from '../iconOptions';
 import { NativeTabs } from '../NativeTabs';
 import type {
   DrawableIcon,

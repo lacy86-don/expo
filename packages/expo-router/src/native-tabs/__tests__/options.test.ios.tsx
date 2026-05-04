@@ -5,7 +5,7 @@ import { Button, View } from 'react-native';
 import { HrefPreview } from '../../link/preview/HrefPreview';
 import { Badge, Icon, Label } from '../../primitives';
 import { renderRouter, within } from '../../testing-library';
-import { appendIconOptions } from '../NativeTabTrigger';
+import { appendIconOptions } from '../iconOptions';
 import { NativeTabs } from '../NativeTabs';
 import { NativeTabsView as _NativeTabsView } from '../NativeTabsView';
 import type { NativeTabsTriggerIconProps } from '../common/elements';
