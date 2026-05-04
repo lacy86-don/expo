@@ -72,7 +72,7 @@ describe('plugin list snapshots', () => {
         "expo-environment-restricted-imports-plugin",
         "expo-widgets",
         "expo-import-meta-transform",
-        "proposal-decorators",
+        "expo-lazy-decorators",
         "worklets",
         "expo-ui",
         "warn-on-deep-imports",
@@ -129,7 +129,7 @@ describe('plugin list snapshots', () => {
         "expo-environment-restricted-imports-plugin",
         "expo-widgets",
         "expo-import-meta-transform",
-        "proposal-decorators",
+        "expo-lazy-decorators",
         "worklets",
         "expo-ui",
         "warn-on-deep-imports",
@@ -188,7 +188,7 @@ describe('plugin list snapshots', () => {
         "expo-environment-restricted-imports-plugin",
         "expo-widgets",
         "expo-import-meta-transform",
-        "proposal-decorators",
+        "expo-lazy-decorators",
         "worklets",
         "expo-ui",
         "transform-react-jsx",
@@ -237,7 +237,7 @@ describe('plugin list snapshots', () => {
         "expo-environment-restricted-imports-plugin",
         "expo-widgets",
         "expo-import-meta-transform",
-        "proposal-decorators",
+        "expo-lazy-decorators",
         "worklets",
         "expo-ui",
         "warn-on-deep-imports",
@@ -281,7 +281,7 @@ describe('plugin list snapshots', () => {
         "expo-environment-restricted-imports-plugin",
         "expo-widgets",
         "expo-import-meta-transform",
-        "proposal-decorators",
+        "expo-lazy-decorators",
         "worklets",
         "expo-ui",
         "transform-react-jsx",
@@ -326,7 +326,7 @@ describe('plugin list snapshots', () => {
         "expo-environment-restricted-imports-plugin",
         "expo-widgets",
         "expo-import-meta-transform",
-        "proposal-decorators",
+        "expo-lazy-decorators",
         "worklets",
         "expo-ui",
         "warn-on-deep-imports",
@@ -374,7 +374,7 @@ describe('plugin list snapshots', () => {
         "expo-environment-restricted-imports-plugin",
         "expo-widgets",
         "expo-import-meta-transform",
-        "proposal-decorators",
+        "expo-lazy-decorators",
         "worklets",
         "expo-ui",
         "warn-on-deep-imports",
@@ -423,7 +423,7 @@ describe('plugin list snapshots', () => {
         "expo-environment-restricted-imports-plugin",
         "expo-widgets",
         "expo-import-meta-transform",
-        "proposal-decorators",
+        "expo-lazy-decorators",
         "worklets",
         "expo-ui",
         "warn-on-deep-imports",
@@ -530,12 +530,12 @@ describe('decorators', () => {
       { name: 'metro', platform: 'ios', isDev: true },
       { decorators: false }
     );
-    expect(keys).not.toContain('proposal-decorators');
+    expect(keys).not.toContain('expo-lazy-decorators');
   });
 
   it('includes proposal-decorators by default', () => {
     const keys = getPluginKeys({ name: 'metro', platform: 'ios', isDev: true });
-    expect(keys).toContain('proposal-decorators');
+    expect(keys).toContain('expo-lazy-decorators');
   });
 });
 
