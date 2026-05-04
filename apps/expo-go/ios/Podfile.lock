@@ -3754,7 +3754,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - RNWorklets (0.8.2):
+  - RNWorklets (0.8.3):
     - boost
     - DoubleConversion
     - fast_float
@@ -3782,11 +3782,11 @@ PODS:
     - ReactCodegen
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
-    - RNWorklets/apple (= 0.8.2)
-    - RNWorklets/common (= 0.8.2)
+    - RNWorklets/apple (= 0.8.3)
+    - RNWorklets/common (= 0.8.3)
     - SocketRocket
     - Yoga
-  - RNWorklets/apple (0.8.2):
+  - RNWorklets/apple (0.8.3):
     - boost
     - DoubleConversion
     - fast_float
@@ -3816,7 +3816,7 @@ PODS:
     - ReactCommon/turbomodule/core
     - SocketRocket
     - Yoga
-  - RNWorklets/common (0.8.2):
+  - RNWorklets/common (0.8.3):
     - boost
     - DoubleConversion
     - fast_float
@@ -4622,7 +4622,7 @@ SPEC CHECKSUMS:
   ExpoModulesCore: d39abb48e55d828ac2abd4800e226244bcdb6447
   ExpoModulesJSI: 16f789b94db843249981e5f550e050cc321fe554
   ExpoModulesTestCore: 62ce59e8c8162b449e65467e0421240256ba6732
-  ExpoModulesWorklets: 8a4fbb101cf7d6f6a046560167938425679b5141
+  ExpoModulesWorklets: 445b75aa266902e0624f3f425b56ad5fa520f304
   ExpoNetwork: 15d026c5c28251e0810849c8c01ebc9bc73ad007
   ExpoNotifications: 58a5bf9c5a0a2ee7d1800f9ed26ff17ff3748fde
   ExpoPrint: 884afdcfe9adea0d36f121353652d0cfa7963deb
@@ -4762,7 +4762,7 @@ SPEC CHECKSUMS:
   RNReanimated: 7a13e1d8ccabef6780dce63cfd66999a63233497
   RNScreens: 16bd039e76f91145275890a1e1cf848b98c1da7a
   RNSVG: c9d7c940ad9655eba72c5b9ca7b017c95bb58083
-  RNWorklets: ebd0e078251c5621abec3f4a72b0c7b423ba04c9
+  RNWorklets: c2db7fdd38222fb256e77cbd4fee7c32b351744c
   SDWebImage: e9fc87c1aab89a8ab1bbd74eba378c6f53be8abf
   SDWebImageAVIFCoder: afe194a084e851f70228e4be35ef651df0fc5c57
   SDWebImageSVGCoder: 15a300a97ec1c8ac958f009c02220ac0402e936c
