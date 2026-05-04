@@ -120,8 +120,10 @@ internal class HostView(context: Context, appContext: AppContext) :
 
     CompositionLocalProvider(LocalLayoutDirection provides layoutDirection) {
       MaterialExpressiveTheme(colorScheme = colorScheme) {
-        MaybeMatchContentsLayout {
-          Children(this@Content)
+        ProvideNamedGraphicsLayers {
+          MaybeMatchContentsLayout {
+            Children(this@Content)
+          }
         }
       }
     }

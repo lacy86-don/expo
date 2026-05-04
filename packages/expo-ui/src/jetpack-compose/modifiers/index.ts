@@ -141,10 +141,71 @@ export const offset = (x: number, y: number) => createModifier('offset', { x, y 
 // =============================================================================
 
 /**
- * Sets the background color.
- * @param color - Color string (hex, e.g., '#FF0000').
+ * A point in a normalized [0, 1] coordinate space, used to define gradient start and end positions.
  */
-export const background = (color: ColorValue) => createModifier('background', { color });
+export type GradientPoint = { x: number; y: number };
+
+/**
+ * Configuration for a linear gradient brush.
+ */
+export type LinearGradientConfig = {
+  /** Array of color strings (hex, e.g., '#FF0000'). At least 2 entries. */
+  colors: ColorValue[];
+  /** Start point in normalized [0, 1] coordinates. @default { x: 0, y: 0 } */
+  startPoint?: GradientPoint;
+  /** End point in normalized [0, 1] coordinates. @default { x: 1, y: 1 } */
+  endPoint?: GradientPoint;
+};
+
+/**
+ * Describes how a region is painted. Mirrors Compose's
+ * [`Brush`](https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Brush).
+ * Construct via the brush factories (e.g., `linearGradient`) and pass to
+ * modifiers like `background`.
+ */
+export type Brush = { type: 'linearGradient' } & LinearGradientConfig;
+
+/**
+ * Creates a linear gradient brush — mirrors Compose's
+ * [`Brush.linearGradient`](https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/Brush#linearGradient(kotlin.collections.List,androidx.compose.ui.geometry.Offset,androidx.compose.ui.geometry.Offset,androidx.compose.ui.graphics.TileMode)).
+ *
+ * @example
+ * ```ts
+ * background(linearGradient({ colors: ['#FF3B30', '#007AFF'] }))
+ * ```
+ */
+export function linearGradient(config: LinearGradientConfig): Brush {
+  if (config.colors.length < 2) {
+    throw new Error(
+      `linearGradient requires at least 2 colors, got ${config.colors.length}. Pass two or more entries in 'colors'.`
+    );
+  }
+  return {
+    type: 'linearGradient',
+    colors: config.colors,
+    startPoint: config.startPoint ?? { x: 0, y: 0 },
+    endPoint: config.endPoint ?? { x: 1, y: 1 },
+  };
+}
+
+/**
+ * Sets the background color or brush.
+ * @param value - A color string (hex, e.g., `'#FF0000'`) or a `Brush` (e.g., `linearGradient({ colors: [...] })`).
+ */
+export function background(value: ColorValue | Brush) {
+  if (isBrush(value)) {
+    return createModifier('background', { brush: value });
+  }
+  return createModifier('background', { color: value });
+}
+
+function isBrush(value: ColorValue | Brush): value is Brush {
+  return (
+    value !== null &&
+    typeof value === 'object' &&
+    (value as { type?: unknown }).type === 'linearGradient'
+  );
+}
 
 /**
  * Adds a border around the view.
@@ -229,6 +290,93 @@ export const graphicsLayer = (params: {
  * @param index - Z-index value.
  */
 export const zIndex = (index: number) => createModifier('zIndex', { index });
+
+/**
+ * Compose [BlendMode](https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/BlendMode)
+ * names accepted by `recordLayer`.
+ */
+export type BlendMode =
+  | 'clear'
+  | 'src'
+  | 'dst'
+  | 'srcOver'
+  | 'dstOver'
+  | 'srcIn'
+  | 'dstIn'
+  | 'srcOut'
+  | 'dstOut'
+  | 'srcAtop'
+  | 'dstAtop'
+  | 'xor'
+  | 'plus'
+  | 'modulate'
+  | 'screen'
+  | 'overlay'
+  | 'darken'
+  | 'lighten'
+  | 'colorDodge'
+  | 'colorBurn'
+  | 'hardLight'
+  | 'softLight'
+  | 'difference'
+  | 'exclusion'
+  | 'multiply'
+  | 'hue'
+  | 'saturation'
+  | 'color'
+  | 'luminosity';
+
+/**
+ * Records the receiver's drawing into a named graphics layer using the given
+ * blend mode, instead of drawing it on screen. Pair with a `drawLayer`
+ * modifier on an ancestor to composite the recorded layer back onto the
+ * destination. Used to build masking, compositing, and blend effects from
+ * JSX.
+ *
+ * The receiver's content is captured into the named layer and is *not*
+ * drawn at the receiver's position — use a sibling `drawLayer({ name })`
+ * one level up to paint the result.
+ *
+ * Layer names are scoped to the surrounding `Host`. Names from different
+ * `Host`s never collide.
+ *
+ * @example
+ * ```tsx
+ * // Mask the parent's content with a circle:
+ * <Box modifiers={[
+ *   graphicsLayer({ compositingStrategy: 'offscreen' }),
+ *   drawLayer({ name: 'mask' }),
+ * ]}>
+ *   <Image source={...} />
+ *   <Box modifiers={[
+ *     matchParentSize(),
+ *     recordLayer({ name: 'mask', blendMode: 'dstIn' }),
+ *   ]}>
+ *     <Shape shape={Shapes.Circle} />
+ *   </Box>
+ * </Box>
+ * ```
+ *
+ * @see [Compose `GraphicsLayer.record`](https://developer.android.com/reference/kotlin/androidx/compose/ui/graphics/layer/GraphicsLayer#record%28androidx.compose.ui.unit.Density,androidx.compose.ui.unit.LayoutDirection,androidx.compose.ui.unit.IntSize,kotlin.Function1%29)
+ */
+export const recordLayer = (params: { name: string; blendMode?: BlendMode }) =>
+  createModifier('recordLayer', params);
+
+/**
+ * Draws a named graphics layer (recorded by a descendant via `recordLayer`)
+ * after the receiver's own content. The recorded layer's blend mode controls
+ * how it composites with what's already drawn.
+ *
+ * For blend modes other than `srcOver`, list `graphicsLayer({ compositingStrategy: 'offscreen' })`
+ * *before* `drawLayer` in the modifiers array so the blending happens in an
+ * offscreen buffer. Otherwise the result is silently incorrect.
+ *
+ * If no descendant has yet recorded into `name`, this modifier is a no-op
+ * for that frame.
+ *
+ * @see {@link recordLayer} for an end-to-end example.
+ */
+export const drawLayer = (params: { name: string }) => createModifier('drawLayer', params);
 
 // =============================================================================
 // Animation Modifiers
